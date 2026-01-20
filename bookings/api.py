@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-import uuid
 from .services import (
     create_booking,
     get_user_bookings,
@@ -55,7 +54,7 @@ async def get_all_bookings_endpoint(
     response_model=BookingResponseSchema
 )
 async def cancel_booking_endpoint(
-    id: uuid.UUID,
+    id: int,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -67,7 +66,7 @@ async def cancel_booking_endpoint(
     response_model=BookingResponseSchema
 )
 async def update_booking_status_endpoint(
-    id: uuid.UUID,
+    id: int,
     data: BookingUpdateStatusSchema,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(admin_required)

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-import uuid
 from .services import (
     get_destinations,
     get_destination_by_id,
@@ -28,7 +27,7 @@ async def list_destinations(db: AsyncSession = Depends(get_db), current_user: Us
 
 @destinations_router.get("/destinations/{id}", response_model=DestinationResponseSchema)
 async def retrieve_destination(
-    id: uuid.UUID,
+    id: int,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -53,7 +52,7 @@ async def create_destination_endpoint(
     response_model=DestinationResponseSchema
 )
 async def update_destination_endpoint(
-    id: uuid.UUID,
+    id: int,
     data: DestinationUpdateSchema,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(admin_required)
@@ -66,7 +65,7 @@ async def update_destination_endpoint(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_destination_endpoint(
-    id: uuid.UUID,
+    id: int,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(admin_required)
 ):

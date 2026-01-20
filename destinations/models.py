@@ -1,7 +1,6 @@
-from sqlalchemy import String, Float, DateTime, Text
+from sqlalchemy import Integer, String, Float, DateTime, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
-import uuid
 from database import BaseModel
 from bookings.models import Booking
 from reviews.models import Review
@@ -10,7 +9,7 @@ from reviews.models import Review
 class Destination(BaseModel):
     __tablename__ = "destinations"
     
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     country: Mapped[str] = mapped_column(String, nullable=False)

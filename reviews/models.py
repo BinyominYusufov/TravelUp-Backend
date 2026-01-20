@@ -2,14 +2,13 @@ from sqlalchemy import Integer, String, DateTime, ForeignKey, Text
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import BaseModel
-import uuid
 
 class Review(BaseModel):
     __tablename__ = "reviews"
     
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
-    destination_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("destinations.id"), nullable=False)
+    destination_id: Mapped[int] = mapped_column(Integer, ForeignKey("destinations.id"), nullable=False)
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
     comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())

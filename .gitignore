@@ -1,0 +1,4 @@
+.venv
+jwt.db
+__pycache__
+vscode

@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException, status
-import uuid
 from .models import Payment, PaymentStatus
 from .schemas import PaymentCreateSchema
 from bookings.models import Booking

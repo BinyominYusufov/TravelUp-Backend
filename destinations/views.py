@@ -4,7 +4,6 @@ from sqlalchemy import select
 from database import get_db
 from .models import Destination
 from .schemas import DestinationListSchema, DestinationDetailSchema
-import uuid
 
 destinations_router = APIRouter()
 
@@ -20,7 +19,7 @@ async def get_destinations(
 
 @destinations_router.get("/destinations/{id}", response_model=DestinationDetailSchema)
 async def get_destination(
-    id: uuid.UUID,
+    id: int,
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(Destination).where(Destination.id == id))

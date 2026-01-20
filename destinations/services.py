@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from fastapi import HTTPException, status
-import uuid
 from .models import Destination
 from .schemas import DestinationCreateSchema, DestinationUpdateSchema
 
@@ -11,7 +10,7 @@ async def get_destinations(db: AsyncSession):
     return result.scalars().all()
 
 
-async def get_destination_by_id(destination_id: uuid.UUID, db: AsyncSession) -> Destination:
+async def get_destination_by_id(destination_id: int, db: AsyncSession) -> Destination:
     result = await db.execute(select(Destination).where(Destination.id == destination_id))
     destination = result.scalar_one_or_none()
     
@@ -40,7 +39,7 @@ async def create_destination(data: DestinationCreateSchema, db: AsyncSession) ->
 
 
 async def update_destination(
-    destination_id: uuid.UUID,
+    destination_id: int,
     data: DestinationUpdateSchema,
     db: AsyncSession
 ) -> Destination:
@@ -55,7 +54,7 @@ async def update_destination(
     return destination
 
 
-async def delete_destination(destination_id: uuid.UUID, db: AsyncSession) -> None:
+async def delete_destination(destination_id: int, db: AsyncSession) -> None:
     await get_destination_by_id(destination_id, db)
     await db.execute(delete(Destination).where(Destination.id == destination_id))
     await db.commit()

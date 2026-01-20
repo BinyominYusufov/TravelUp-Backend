@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 from datetime import datetime, date
-import uuid
 from enum import Enum
 
 
@@ -11,7 +10,7 @@ class BookingStatusEnum(str, Enum):
 
 
 class BookingCreateSchema(BaseModel):
-    destination_id: uuid.UUID
+    destination_id: int
     start_date: date
     end_date: date
     travelers_count: int = Field(gt=0)
@@ -23,9 +22,9 @@ class BookingUpdateStatusSchema(BaseModel):
 
 
 class BookingResponseSchema(BaseModel):
-    id: uuid.UUID
+    id: int
     user_id: int
-    destination_id: uuid.UUID
+    destination_id: int
     start_date: date
     end_date: date
     travelers_count: int

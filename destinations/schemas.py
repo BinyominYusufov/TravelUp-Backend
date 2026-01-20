@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from datetime import datetime
-import uuid
 
 
 class DestinationCreateSchema(BaseModel):
@@ -22,7 +21,7 @@ class DestinationUpdateSchema(BaseModel):
 
 
 class DestinationResponseSchema(BaseModel):
-    id: uuid.UUID
+    id: int
     title: str
     description: str | None
     country: str

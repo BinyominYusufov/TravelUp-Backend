@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException, status
-import uuid
 from .models import Booking, BookingStatus
 from .schemas import BookingCreateSchema, BookingUpdateStatusSchema
 from destinations.models import Destination
@@ -42,7 +41,7 @@ async def get_all_bookings(db: AsyncSession) -> list[Booking]:
     return list(result.scalars().all())
 
 
-async def get_booking_by_id(booking_id: uuid.UUID, db: AsyncSession) -> Booking:
+async def get_booking_by_id(booking_id: int, db: AsyncSession) -> Booking:
     result = await db.execute(select(Booking).where(Booking.id == booking_id))
     booking = result.scalar_one_or_none()
     
@@ -55,7 +54,7 @@ async def get_booking_by_id(booking_id: uuid.UUID, db: AsyncSession) -> Booking:
     return booking
 
 
-async def cancel_booking(booking_id: uuid.UUID, user_id: int, db: AsyncSession) -> Booking:
+async def cancel_booking(booking_id: int, user_id: int, db: AsyncSession) -> Booking:
     booking = await get_booking_by_id(booking_id, db)
     
     if booking.user_id != user_id:
@@ -70,7 +69,7 @@ async def cancel_booking(booking_id: uuid.UUID, user_id: int, db: AsyncSession) 
     return booking
 
 
-async def update_booking_status(booking_id: uuid.UUID, data: BookingUpdateStatusSchema, db: AsyncSession) -> Booking:
+async def update_booking_status(booking_id: int, data: BookingUpdateStatusSchema, db: AsyncSession) -> Booking:
     booking = await get_booking_by_id(booking_id, db)
     booking.status = data.status.value
     await db.commit()

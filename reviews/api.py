@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-import uuid
 from .services import (
     create_review,
     get_destination_reviews,
@@ -35,7 +34,7 @@ async def create_review_endpoint(
 
 @reviews_router.get("/destinations/{id}/reviews", response_model=list[ReviewResponseSchema])
 async def get_destination_reviews_endpoint(
-    id: uuid.UUID,
+    id: int,
     db: AsyncSession = Depends(get_db)
 ):
     return await get_destination_reviews(id, db)
@@ -46,7 +45,7 @@ async def get_destination_reviews_endpoint(
     response_model=ReviewResponseSchema
 )
 async def update_review_endpoint(
-    id: uuid.UUID,
+    id: int,
     data: ReviewUpdateSchema,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -59,7 +58,7 @@ async def update_review_endpoint(
     status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_review_endpoint(
-    id: uuid.UUID,
+    id: int,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):

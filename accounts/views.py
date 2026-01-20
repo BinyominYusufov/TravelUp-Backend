@@ -176,8 +176,11 @@ async def set_permissions_to_user_api_view(data:SetUserPermissionsSchema, db:Asy
     if not permissions:
         raise HTTPException(detail="Permission doesn't exist", status_code=status.HTTP_400_BAD_REQUEST)
     
+    # Получаем ID существующих permissions для безопасной проверки
+    existing_permission_ids = {p.id for p in user.permissions}
+    
     for perm in permissions:
-        if perm not in user.permissions:
+        if perm.id not in existing_permission_ids:
             user.permissions.append(perm)
     await db.commit()
     # Перезагружаем пользователя с relationships
@@ -210,7 +213,12 @@ async def create_role_api_view(data:AddRoleSchema, db:AsyncSession=Depends(get_d
 
 @auth_route.post("/add-permissions-to-role", response_model=RoleSchema)
 async def add_permissions_to_role(data:SetRolePermissionsSchema, db:AsyncSession=Depends(get_db)):
-    result = await db.execute(select(Role).where(Role.id==data.role_id))
+    # Загружаем роль с permissions для проверки существующих
+    result = await db.execute(
+        select(Role)
+        .where(Role.id==data.role_id)
+        .options(selectinload(Role.permissions))
+    )
     role = result.scalar_one_or_none()
     if not role:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Role not found!")
@@ -219,11 +227,14 @@ async def add_permissions_to_role(data:SetRolePermissionsSchema, db:AsyncSession
     if not permissions:
         raise HTTPException(detail="Permission doesn't exist", status_code=status.HTTP_400_BAD_REQUEST)
     
+    # Получаем ID существующих permissions для безопасной проверки
+    existing_permission_ids = {p.id for p in role.permissions}
+    
     for perm in permissions:
-        if perm not in role.permissions:
+        if perm.id not in existing_permission_ids:
             role.permissions.append(perm)
     await db.commit()
-    # Перезагружаем роль с relationships
+    # Перезагружаем роль с relationships для ответа
     result = await db.execute(
         select(Role)
         .where(Role.id == role.id)
@@ -243,8 +254,11 @@ async def add_role_to_user_view(data:SetRoleToUserSchema, db:AsyncSession=Depend
     if not roles:
         raise HTTPException(detail="Roles don't exist", status_code=status.HTTP_400_BAD_REQUEST)
     
+    # Получаем ID существующих roles для безопасной проверки
+    existing_role_ids = {r.id for r in user.roles}
+    
     for r in roles:
-        if r not in user.roles:
+        if r.id not in existing_role_ids:
             user.roles.append(r)
     await db.commit()
     # Перезагружаем пользователя с relationships
@@ -261,7 +275,7 @@ async def add_role_to_user_view(data:SetRoleToUserSchema, db:AsyncSession=Depend
 
 
 
-@auth_route.post("/add-user", response_model=AddUserShcema)
+@auth_route.post("/add-user", dependencies=[Depends(is_admin_user)], response_model=AddUserShcema)
 async def add_user_api_view(data:AddUserShcema, db:AsyncSession=Depends(get_db)):
     result = await db.execute(select(User).where(User.username == data.username))
     if result.scalar_one_or_none():

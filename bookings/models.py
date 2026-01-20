@@ -2,7 +2,6 @@ from sqlalchemy import Integer, String, DateTime, ForeignKey, Date, Float, Enum 
 from datetime import datetime, date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import BaseModel
-import uuid
 import enum
 
 
@@ -15,9 +14,9 @@ class BookingStatus(str, enum.Enum):
 class Booking(BaseModel):
     __tablename__ = "bookings"
     
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
-    destination_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("destinations.id"), nullable=False)
+    destination_id: Mapped[int] = mapped_column(Integer, ForeignKey("destinations.id"), nullable=False)
     start_date: Mapped[date] = mapped_column(Date, nullable=False)
     end_date: Mapped[date] = mapped_column(Date, nullable=False)
     travelers_count: Mapped[int] = mapped_column(Integer, nullable=False)

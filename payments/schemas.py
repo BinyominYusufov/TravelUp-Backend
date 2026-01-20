@@ -1,18 +1,17 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-import uuid
 
 
 class PaymentCreateSchema(BaseModel):
-    booking_id: uuid.UUID
+    booking_id: int
     amount: float = Field(gt=0)
     currency: str = "USD"
     provider: str
 
 
 class PaymentResponseSchema(BaseModel):
-    id: uuid.UUID
-    booking_id: uuid.UUID
+    id: int
+    booking_id: int
     amount: float
     currency: str
     provider: str

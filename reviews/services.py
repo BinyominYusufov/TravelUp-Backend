@@ -1,7 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from fastapi import HTTPException, status
-import uuid
 from .models import Review
 from .schemas import ReviewCreateSchema, ReviewUpdateSchema
 from bookings.models import Booking
@@ -48,12 +47,12 @@ async def create_review(user_id: int, data: ReviewCreateSchema, db: AsyncSession
     return review
 
 
-async def get_destination_reviews(destination_id: uuid.UUID, db: AsyncSession) -> list[Review]:
+async def get_destination_reviews(destination_id: int, db: AsyncSession) -> list[Review]:
     result = await db.execute(select(Review).where(Review.destination_id == destination_id))
     return list(result.scalars().all())
 
 
-async def get_review_by_id(review_id: uuid.UUID, db: AsyncSession) -> Review:
+async def get_review_by_id(review_id: int, db: AsyncSession) -> Review:
     result = await db.execute(select(Review).where(Review.id == review_id))
     review = result.scalar_one_or_none()
     
@@ -66,7 +65,7 @@ async def get_review_by_id(review_id: uuid.UUID, db: AsyncSession) -> Review:
     return review
 
 
-async def update_review(review_id: uuid.UUID, user_id: int, data: ReviewUpdateSchema, db: AsyncSession) -> Review:
+async def update_review(review_id: int, user_id: int, data: ReviewUpdateSchema, db: AsyncSession) -> Review:
     review = await get_review_by_id(review_id, db)
     
     if review.user_id != user_id:
@@ -84,7 +83,7 @@ async def update_review(review_id: uuid.UUID, user_id: int, data: ReviewUpdateSc
     return review
 
 
-async def delete_review(review_id: uuid.UUID, user_id: int, is_admin: bool, db: AsyncSession) -> None:
+async def delete_review(review_id: int, user_id: int, is_admin: bool, db: AsyncSession) -> None:
     review = await get_review_by_id(review_id, db)
     
     if review.user_id != user_id and not is_admin:
