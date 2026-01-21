@@ -139,14 +139,23 @@ async def update_profile(
     if not current_user:
         raise HTTPException(status_code=401, detail="Unauthorized")
     
+    # Загружаем пользователя из базы для обновления
+    result = await db.execute(
+        select(User).where(User.id == current_user.id)
+    )
+    user = result.scalar_one()
+    
     if profile_data.theme is not None:
-        current_user.theme = profile_data.theme.value
+        # ThemeEnum это str Enum, поэтому можно использовать .value или просто значение
+        user.theme = profile_data.theme.value if hasattr(profile_data.theme, 'value') else str(profile_data.theme)
     
     await db.commit()
-    # Перезагружаем пользователя с relationships
+    await db.refresh(user)
+    
+    # Перезагружаем пользователя с relationships для ответа
     result = await db.execute(
         select(User)
-        .where(User.id == current_user.id)
+        .where(User.id == user.id)
         .options(
             selectinload(User.permissions),
             selectinload(User.roles).selectinload(Role.permissions)

@@ -80,6 +80,7 @@ class LoginShcema(BaseModel):
 class UserSchema(BaseModel):
     id:int
     username:str
+    theme:str
     permissions:list["PermissionSchema"]
     roles:list["RoleSchema"]
     
