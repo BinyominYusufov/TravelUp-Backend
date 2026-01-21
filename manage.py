@@ -25,8 +25,8 @@ app.add_middleware(
         "http://localhost:8080",
         "http://localhost:8081",    
         "http://127.0.0.1:8080",
-        'https://adminpanel-travelup.vercel.app'
-        'https://travel-up-front-end.vercel.app'
+        'https://adminpanel-travelup.vercel.app/'
+        'https://travel-up-front-end.vercel.app/'
     ],
     allow_credentials=True,
     allow_methods=["*"],
