@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from bookings.api import bookings_router
 from reviews.api import reviews_router
 from payments.api import payments_router
+from chat.api import chat_router
 from middlewares import simple_midlleware, process_time_per_request
 from database import engine, BaseModel
 from accounts.models import User, Role, Permission, BlackListTokens
@@ -44,6 +45,7 @@ app.include_router(destinations_router, prefix="/destinations", tags=["Destinati
 app.include_router(bookings_router, prefix="/bookings", tags=["Bookings endpoints"])
 app.include_router(reviews_router, prefix="/reviews", tags=["Reviews endpoints"])
 app.include_router(payments_router, prefix="/payments", tags=["Payments endpoints"])
+app.include_router(chat_router, prefix="", tags=["Chat endpoints"])
 
 app.middleware("http")(simple_midlleware)
 app.middleware("http")(process_time_per_request)
@@ -59,7 +61,7 @@ async def get_test():
 if __name__ == "__main__":
     uvicorn.run(
         "manage:app",
-        host="127.0.0.1",
+        host="localhost",
         port=8000,
         reload=True,
     )

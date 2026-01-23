@@ -48,7 +48,7 @@ async def generate_tokens(user_id: int, db: AsyncSession):
         "access_token": access_token,
         "refresh_token": refresh_token
     }
-
+    
 
 def decode_jwt(token: str):
     try:

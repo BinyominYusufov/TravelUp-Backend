@@ -7,7 +7,6 @@ class DestinationCreateSchema(BaseModel):
     description: str | None = None
     country: str
     city: str
-    cover_image: str | None = None
     rating: float = 0.0
 
 
@@ -16,7 +15,6 @@ class DestinationUpdateSchema(BaseModel):
     description: str | None = None
     country: str | None = None
     city: str | None = None
-    cover_image: str | None = None
     rating: float | None = None
 
 
